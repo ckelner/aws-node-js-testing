@@ -1,14 +1,8 @@
 var AWS = require('aws-sdk');
 
-// First test listing s3 buckets for IAM role applied to instance
+// test using temporary credentials to list billing bucket contents
 AWS.config.update({region: 'us-east-1'});
 var s3 = new AWS.S3();
-s3.listBuckets(function(err, data) {
-  if (err) console.log(err, err.stack); // an error occurred
-  else     console.log(data);           // successful response
-});
-
-// Second: test using temporary credentials to list billing bucket contents
 // from http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/STS.html
 var sts = new AWS.STS();
 var params = {
