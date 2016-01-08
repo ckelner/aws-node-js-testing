@@ -2,12 +2,11 @@ var AWS = require('aws-sdk');
 
 // test using temporary credentials to list billing bucket contents
 AWS.config.update({region: 'us-east-1'});
-var s3 = new AWS.S3();
 // from http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/STS.html
 var sts = new AWS.STS();
 var params = {
   RoleArn: 'arn:aws:iam::013328811177:role/ice', /* required */
-  RoleSessionName: '', /* required */
+  RoleSessionName: 'test', /* required */
   DurationSeconds: 900,
 };
 sts.assumeRole(params, function (err, data) {
@@ -16,13 +15,13 @@ sts.assumeRole(params, function (err, data) {
   }
   else {
     console.log(data);           // successful response
+    console.log("\n\n");
     // crappy way of doing this, should use callbacks or promises or something, but quick hax!
-    // from http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/TemporaryCredentials.html
-    // Note that environment credentials are loaded by default,
-    // the following line is shown for clarity:
-    AWS.config.credentials = new AWS.EnvironmentCredentials('AWS');
-    // Now set temporary credentials seeded from the master credentials
-    AWS.config.credentials = new AWS.TemporaryCredentials();
+    var s3 = new AWS.S3({
+      accessKeyId: data.Credentials.AccessKeyId,
+      secretAccessKey: data.Credentials.SecretAccessKey,
+      sessionToken: data.Credentials.SessionToken
+    });
     // subsequent requests will now use temporary credentials from AWS STS.
     var params = {
       Bucket: 'twc_consolidated_billing', /* required */
@@ -30,8 +29,12 @@ sts.assumeRole(params, function (err, data) {
       EncodingType: 'url'
     };
     s3.listObjects(params, function(err, data) {
-      if (err) console.log(err, err.stack); // an error occurred
-      else     console.log(data);           // successful response
+      if (err) {
+        console.log(err, err.stack); // an error occurred
+      }
+      else {
+        console.log(data);           // successful response
+      }
     });
   }
 });
