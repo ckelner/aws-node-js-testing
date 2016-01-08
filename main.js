@@ -7,7 +7,7 @@ var s3 = new AWS.S3();
 var sts = new AWS.STS();
 var params = {
   RoleArn: 'arn:aws:iam::013328811177:role/ice', /* required */
-  RoleSessionName: 'kelner-test', /* required */
+  RoleSessionName: '', /* required */
   DurationSeconds: 900,
 };
 sts.assumeRole(params, function (err, data) {
