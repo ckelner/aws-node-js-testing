@@ -2,7 +2,7 @@ var AWS = require('aws-sdk');
 //AWS.config.loadFromPath('./config.json');
 AWS.config.update({region: 'us-east-1'});
 
-var ec2 = new AWS.EC2();
+//var ec2 = new AWS.EC2();
 // from http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/STS.html
 var sts = new AWS.STS();
 var params = {
@@ -17,7 +17,7 @@ sts.assumeRole(params, function (err, data) {
 // from http://docs.aws.amazon.com/AWSJavaScriptSDK/latest/AWS/TemporaryCredentials.html
 // Note that environment credentials are loaded by default,
 // the following line is shown for clarity:
-AWS.config.credentials = new AWS.EnvironmentCredentials('AWS');
+// AWS.config.credentials = new AWS.EnvironmentCredentials('AWS');
 // Now set temporary credentials seeded from the master credentials
 AWS.config.credentials = new AWS.TemporaryCredentials();
 // subsequent requests will now use temporary credentials from AWS STS.
